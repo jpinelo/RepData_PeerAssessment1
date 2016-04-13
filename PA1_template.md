@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: yes
+---
 
 ___
 ####Loading Libraries       
@@ -38,7 +43,7 @@ hist(stepsPerDay$daily.steps,
       main="Histogram of the Total Number of Daily Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 #####1.3 - Calculate and report the mean and median total number of steps taken per day.     
 
@@ -63,7 +68,7 @@ qplot(x=interval, y=steps, data=averageInterval, geom="line",
       main="Average Number of Steps per Time Interval Accross all Days")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 #####2.2 - Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?     
 The 5-minute interval with the highest average number of steps accross all days is interval: **835**     
@@ -120,7 +125,7 @@ dfImputedPerDay <- dfImputed %>%
 hist(dfImputedPerDay$daily.steps, main = "Histogram of the Total Number of Daily Steps (with imputed data)")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 
 ```r
 meanDailyStepsImputed <- mean(dfImputedPerDay$daily.steps)
@@ -161,11 +166,12 @@ qplot(x = interval, y = steps.interval, data = intervalPattern, facets = day ~ .
       main = "Daily Pattern of Steps By Interval on Weekdays and Weekends", ylab = "Mean Steps")     
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
         
 The plot above shows the differet patterns of averaged weekday and weeekend number of steps per interval. Notice, for example, that:     
 
 * On weekdays, the number of steps increases sharply just after interval 500, while on the weekends, there is a more progressive increase between intervals 500 and 750;     
 * Weekends show less intense activity (steps) peaks (approximately 170 max against 260 max number of steps per 5 minutes);
 * Weekend days  present a more 'rugged activity pattern' with a higher range of values troughout the day. Just through visual inspection, on weekdays, most activity falls below 50 steps/5min, while on weekend days this threshold is 100 steps/5min.     
-* On weekdays there are only two peaks over 100steps/5min, while on weekends there are nine.    
+* On weekdays there are only two peaks over 100steps/5min, while on weekends there are nine.  
+
