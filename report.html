@@ -105,7 +105,7 @@ df$date &lt;- as.Date(df$date, format = &quot;%Y-%m-%d&quot;)</code></pre>
 <h4>1.3 - Calculate and report the mean and median total number of steps taken per day.</h4>
 <pre class="r"><code>meanDailySteps &lt;- mean(stepsPerDay$daily.steps, na.rm = TRUE)
 medianDailySteps &lt;- median(stepsPerDay$daily.steps, na.rm = TRUE)</code></pre>
-<p>The <strong>mean</strong> of daily steps was 9354 steps, and the <strong>median</strong> was 10395 steps. </p>
+<p>The <strong>mean</strong> of daily steps was 9354 steps, and the <strong>median</strong> was 10395 steps.</p>
 </div>
 </div>
 <div id="question-2---what-is-the-average-daily-activity-pattern" class="section level3">
@@ -199,6 +199,7 @@ qplot(x = interval, y = steps.interval, data = intervalPattern, facets = day ~ .
 <li>Weekend days present a more ‘rugged activity pattern’ with a higher range of values troughout the day. Just through visual inspection, on weekdays, most activity falls below 50 steps/5min, while on weekend days this threshold is 100 steps/5min.<br /></li>
 <li>On weekdays there are only two peaks over 100steps/5min, while on weekends there are nine.</li>
 </ul>
+<p>Note to self:<br />In order to create a <code>figure</code> folder with all the images produced in the html, run (<strong>on the console</strong>): &gt; library(knitr) &gt; knit2html(“report.Rmd”)</p>
 </div>
 </div>
 </div>
