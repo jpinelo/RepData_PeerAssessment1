@@ -1,0 +1,90 @@
+---
+output: html_document
+---
+A Machine Learning Approach to Identify (In)Correct Body Positioning During Wheight Lifting Exercises         
+===
+Joao Pinelo Silva - 2016
+
+###Synopsis
+
+In this report, I aim to create a machine learning algorithm that automates the classification of a wheight lifting exercise as correct, or as performed with one of 4 common errors. The dataset consists of accelerometer data for six participants. The data was collected by various accelerometers located in the following body locations: on the belt, forearm, arm, and dumbell of 6 participants. The lifting of the dumbell was purposefully carried out in five fashions (variable `classe`): A) Correctly; each of the other fashions (B-E) consist of commons mistakes. B) throwing the elbows to the front; C) lifting the dumbbell only halfway; D) lowering the dumbbell only halfway; and E) throwing the hips to the front. The hypothesis is that, since each one of the five fashions for performing the exercise results in somehow different body and barbell movements, each shall be characterized by a unique combination accelerometer data, and therefore identifiable. I found that with 53 variables and bootstraping it was possible to automatically classify the testing sample with an accuracy of 0.99 with a 95% CI of 0.9912, 0.9963.
+
+
+###Data       
+The data used was kindly made available at: [here](http://groupware.les.inf.puc-rio.br/har)
+ 1. The datasets were programatically downloaded from the source website;     
+```{r, eval = TRUE, echo = TRUE, cache = TRUE}
+fileUrl1 <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+download.file(fileUrl1, destfile = "training.csv", method = "curl")
+fileUrl2 <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+download.file(fileUrl2, destfile = "validating.csv", method = "curl")
+```
+ 2. The datasets were imported to the project global environment as `training` and `validating`.    
+```{r, eval = TRUE, echo = TRUE, cache = TRUE}
+training <- read.csv(file = "training.csv", header = TRUE)
+validating <- read.csv(file = "validating.csv", header = TRUE)
+```
+
+
+###How you built your model
+```{r, eval = TRUE, echo = TRUE, message = FALSE, warning = FALSE, cache = TRUE}
+library(caret)
+library(ggplot2)
+#library(doMC)
+#registerDoMC(x) where x is the number of cores to make available to computation
+```
+### Cleaning Datasets + Identifying Predictors
+```{r, eval = TRUE, echo = TRUE, cache = TRUE}
+#Remove unecessary columns
+training <- subset(training, select = -c(1:7))
+validating <- subset(validating, select = -c(1:7))
+#Remove columns with > 90% NAs
+naTreshold <- 0.9
+predictors <- names(training[(colSums(is.na(training)) / nrow(training)) < naTreshold])
+training <- training[, predictors]
+validating$classe <- NA
+validating <- validating[, predictors]
+#Remove variables with very small variance
+smallvariance <- nearZeroVar(training, saveMetrics = TRUE)
+training <- training[, smallvariance$nzv == FALSE]
+validating <- validating[, smallvariance$nzv == FALSE]
+```
+
+#####Split the `training` dataset into `training` (80%) and `testing`(20%)
+```{r, eval = TRUE, echo = TRUE, cache = TRUE}
+set.seed(123)
+inTrainingSet <- createDataPartition(training$classe,
+                                     p = 0.8, list = FALSE)
+classeTrain <- training[ inTrainingSet,]
+classeTest <- training[-inTrainingSet,]
+
+#Training the model
+modelFit <- train(classe ~ ., data = classeTrain)
+#Using the model to predict on the testing set
+predict1 <- predict(modelFit, newdata = classeTest)
+#Checking the results of the model on the testing set
+confusionMatrix(predict1, classeTest$classe)
+```
+
+
+
+###Cross Validation
+Cross validation was conducted via bootrstraping within the training function.
+
+
+###Expected Outcome of Sample Error   
+The out of sample error shall be higher than the testing error (Accuracy 0.9941; 95%CI: 0.9912, 0.9963). Accuracy shall be lower and 95% CI shall be wider, likely with lower tresholds.
+
+###Why you made the choices you did.
+I splited the training set into training and testing set to create the opportunity to adjust the model before assessing its performance with the test data provided, which I used as validating set.
+Using a bootstrap model provided good results, without the need to adjust model parameters. When applied to the validation dataset, the model performed less well, but still very strongly, which suggests that it was not overfitted.
+
+
+###Prediction of the 20 Different Test Cases.
+```{r, eval = TRUE, echo = TRUE, cache = TRUE}
+validate <- predict(modelFit, newdata = validating)
+validate
+```
+
+
+#####*Report produced for the Data Science Specialization, Johns Hopkins University.*
